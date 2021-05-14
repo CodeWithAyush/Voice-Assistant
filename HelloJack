@@ -1,0 +1,145 @@
+import speech_recognition as sr
+import pyttsx3
+import pywhatkit
+import datetime
+import wikipedia
+import pyjokes
+import webbrowser
+import re
+import random
+
+
+listener = sr.Recognizer()
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[0].id)
+engine.setProperty('rate',150)
+engine.say('Hello, I am your jack')
+engine.say('What can i do for you')
+engine.runAndWait()
+
+def talk(text):
+    engine.say(text)
+    engine.runAndWait()
+
+
+def take_command():
+    try:
+        with sr.Microphone() as source:
+
+            print('Listening...')
+            voice = listener.record(source, duration=5)
+            print('Recognizing...')
+            command = listener.recognize_google(voice)
+            command = command.lower()
+
+            if 'Jack' in command:
+                command = command.replace('Jack','')
+                print(command)
+
+    except:
+        pass
+    return command
+
+
+def run_jack():
+    command = take_command()
+
+    if re.search('play',command):
+        song = command.replace('play','')
+        print('playing' + song)
+        talk('playing' + song)
+        pywhatkit.playonyt(song)
+
+    elif re.search('hey|hello|hi',command):
+        say = 'hello'
+        print(say)
+        talk(say)
+
+    elif re.search('how are you',command):
+        li = ['good','fine','great']
+        response = random.choice(li)
+        print(f'I am {response}')
+        talk(f'I am {response}')
+
+    elif re.search('time',command):
+        time = datetime.datetime.now().strftime('%I:%M %p')
+        print(time)
+        talk('current time is' + time)
+
+
+    elif re.search('today date|date',command):
+        date = datetime.date.today()
+        print(date)
+        talk(date)
+
+    elif re.search('search for|who is|what is',command):
+        person1 = command.replace('Search for', '')
+        info1 = wikipedia.summary(person1, 1)
+        print(info1)
+        talk(info1)
+
+    elif re.search('open youtube',command):
+        webbrowser.open('www.youtube.com')
+        print('open youtube')
+
+    elif re.search('open google',command):
+        webbrowser.open('www.google.com')
+        print('open google')
+
+    elif re.search('single',command):
+        say = 'I am in a relationship with wifi'
+        print(say)
+        talk(say)
+
+    elif re.search('joke',command):
+        joke = pyjokes.get_joke()
+        print(joke)
+        talk(joke)
+
+
+    elif re.search('who are you|name',command):
+        ty = 'My name is Jack, I am your personal assistant'
+        print(ty)
+        talk(ty)
+
+    elif re.search('alexa|siri',command):
+        sa = 'Yeah she\'s friend of mine'
+        print(sa)
+        talk(sa)
+
+    elif re.search('old',command):
+        old = 'Just enough to get married'
+        print(old)
+        talk(old)
+
+    elif re.search('day',command):
+        day = 'Super duper I like these long days. It gives me more time to spend with my friends'
+        print(day)
+        talk(day)
+
+    elif re.search('stop',command):
+        quit()
+
+    else:
+        print('Please say again')
+        talk('Please say again')
+
+
+while True:
+    try:
+        run_jack()
+
+    except sr.RequestError:
+        pass
+    except sr.UnknownValueError:
+        pass
+    except UnboundLocalError:
+        pass
+    except ConnectionError:
+        pass
+    except wikipedia.PageError:
+        pass
+
+
+
